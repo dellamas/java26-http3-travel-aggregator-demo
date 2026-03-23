@@ -1,25 +1,54 @@
 # java26-http3-travel-aggregator-demo
 
-Small Java demo that simulates a travel aggregator calling multiple supplier APIs concurrently with `HttpClient` and virtual threads.
+Demo funcional em Java que simula um agregador de viagens consultando múltiplos fornecedores locais em paralelo com `HttpClient` e virtual threads.
 
-## Why this repo exists
+## O que essa demo faz
 
-I used this demo as the companion code for an article about HTTP/3 in Java 26. The point is not to create a full booking platform, but to show how a backend service can fan out requests to multiple providers and keep the code simple, readable, and resilient.
+Ao rodar a aplicação, ela sobe um servidor HTTP local com três fornecedores mock:
 
-## What it shows
+- supplier-a
+- supplier-b
+- supplier-c
 
-- `HttpClient` usage for outbound calls
-- virtual threads for concurrent fan-out
-- explicit timeout configuration
-- basic error handling for supplier failures
-- tests around aggregation and failure behavior
+Depois disso, a própria aplicação envia requisições concorrentes para esses fornecedores, consolida as ofertas e imprime o resultado ordenado pelo menor preço.
 
-## Running tests
+## O que ela demonstra
+
+- uso real de `HttpClient`
+- fan out concorrente com virtual threads
+- timeouts explícitos
+- tratamento básico de erro para fornecedor com falha
+- consolidação e ordenação de ofertas
+- testes automatizados com servidor local
+
+## Requisitos
+
+- Java 21+
+- Maven 3.9+
+
+## Como rodar os testes
 
 ```bash
 mvn test
 ```
 
-## Important note
+## Como executar a aplicação
 
-This sample uses `HttpClient.Version.HTTP_2` by default so it compiles and runs in a stable setup. If you are testing on Java 26 with HTTP/3 available, you can adapt the client configuration and benchmark real integrations.
+```bash
+mvn compile exec:java -Dexec.mainClass=com.dellamas.http3demo.TravelAggregatorApp
+```
+
+Saída esperada, aproximada:
+
+```text
+Best offers for Gramado:
+supplier-b -> Lago Negro Resort (BRL 580.4)
+supplier-c -> Centro Premium Stay (BRL 599.99)
+supplier-a -> Mountain View Inn (BRL 620.9)
+```
+
+## Observação sobre HTTP/3
+
+A demo usa `HttpClient.Version.HTTP_2` por padrão para continuar simples e estável em qualquer ambiente comum.
+
+Se você estiver testando com Java 26 e quiser explorar HTTP/3 de verdade, pode trocar a configuração do client e validar o comportamento contra serviços que suportem esse protocolo.
